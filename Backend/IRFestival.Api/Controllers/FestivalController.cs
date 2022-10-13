@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using IRFestival.Api.Data;
 using IRFestival.Api.Domain;
+using IRFestival.Api.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace IRFestival.Api.Controllers
 {
@@ -11,33 +13,42 @@ namespace IRFestival.Api.Controllers
     [ApiController]
     public class FestivalController : ControllerBase
     {
+        FestivalDbContext context;
+
+        public FestivalController(FestivalDbContext ctx)
+        {
+            context = ctx;
+        }
+
         [HttpGet("LineUp")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Schedule))]
-        public ActionResult GetLineUp()
+        public async Task<ActionResult> GetLineUp()
         {
-            return Ok(FestivalDataSource.Current.LineUp);
+            return Ok(await context.Schedules.ToListAsync());
         }
 
         [HttpGet("Artists")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<Artist>))]
-        public ActionResult GetArtists()
+        public async Task<ActionResult> GetArtists()
         {
-            return Ok(FestivalDataSource.Current.Artists);
+            var artists = await context.Artists.ToListAsync();
+            return Ok(artists);
         }
 
         [HttpGet("Stages")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<Stage>))]
-        public ActionResult GetStages()
+        public async Task<ActionResult> GetStages()
         {
-            return Ok(FestivalDataSource.Current.Stages);
+            return Ok(await context.Stages.ToListAsync());
         }
 
         [HttpPost("Favorite")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ScheduleItem))]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public ActionResult SetAsFavorite(int id)
+        public async Task<ActionResult> SetAsFavorite(int id)
         {
-            var schedule = FestivalDataSource.Current.LineUp.Items
+            var items = await context.ScheduleItems.ToListAsync();
+            var schedule = items
                 .FirstOrDefault(si => si.Id == id);
             if (schedule != null)
             {
