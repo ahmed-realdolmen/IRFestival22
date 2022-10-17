@@ -5,10 +5,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>53e52ff6-9f69-4650-88cf-167b81222202</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/eb72eb71-9844-4821-8a14-cdcf91d24e17/resourceGroups/AzureTrackLab/providers/microsoft.insights/components/IRFiestivalAIahm</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Acamti.Azure.Cosmos" Version="5.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
