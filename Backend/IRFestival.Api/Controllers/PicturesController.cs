@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Messaging.ServiceBus;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -8,6 +9,13 @@ namespace IRFestival.Api.Controllers
     [ApiController]
     public class PicturesController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+
+        public PicturesController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpGet]
         public string[] GetAllPictureUrls()
         {
@@ -15,8 +23,13 @@ namespace IRFestival.Api.Controllers
         }
 
         [HttpPost]
-        public void PostPicture(IFormFile file)
+        public async void PostPicture(IFormFile file)
         {
+            await using var client = new ServiceBusClient(_configuration.GetConnectionString("ServiceBusSenderConnection"));
+            var sender = client.CreateSender(_configuration.GetValue<string>("QueueNameMails"));
+            var message = new ServiceBusMessage(@"{""hi"": 1}");
+
+            await sender.SendMessageAsync(message);
         }
     }
 }
